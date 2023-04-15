@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="wamv_pinger" params="name:='pinger' frameId:='wamv/pinger' position:='0 0 0' orientation:='0 0 0'">
+    <link name="${namespace}/${name}">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+      </visual>
+      <inertial>
+        <mass value="0.1"/>
+        <inertia ixx="0.00000542" ixy="0.0" ixz="0.0" iyy="0.00002104" iyz="0.0" izz="0.00002604"/>
+      </inertial>
+    </link>
+    <joint name="${namespace}/${name}_pinger_joint" type="fixed">
+      <parent link="${namespace}/base_link"/>
+      <child link="${namespace}/${name}"/>
+    </joint>
+
+    <gazebo>
+      <plugin
+        filename="libAcousticPingerPlugin.so"
+        name="vrx::AcousticPingerPlugin">
+        <position>${position}</position>
+        <topic>${namespace}/${pinger_namespace}${name}/range_bearing</topic>
+        <set_position_topic>${namespace}/${pinger_namespace}${name}/set_pinger_position
+        </set_position_topic>
+        <frame_id>${namespace}/${name}</frame_id>
+        <range_noise>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>3.0</stddev>
+          </noise>
+        </range_noise>
+        <bearing_noise>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </bearing_noise>
+        <elevation_noise>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </elevation_noise>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+</robot>
